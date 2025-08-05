@@ -2,7 +2,11 @@
 name = "aws-todo-api"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = ["fastapi>=0.116.1", "mangum>=0.19.0"]
+dependencies = [
+    "boto3>=1.40.2",
+    "fastapi>=0.116.1",
+ "mangum>=0.19.0",
+]
 
 [dependency-groups]
 dev = [
@@ -12,6 +16,7 @@ dev = [
     "pytest-xdist>=3.8.0",
     "ruff>=0.12.7",
     "ty>=0.0.1a16",
+    "types-boto3[essential]>=1.40.2",
 ]
 
 [tool.ruff]

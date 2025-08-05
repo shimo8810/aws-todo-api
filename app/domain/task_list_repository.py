@@ -1,10 +1,9 @@
 from abc import abstractmethod
-from typing import Protocol, runtime_checkable
+from typing import Protocol
 
 from .task_list import TaskList, TaskListId
 
 
-@runtime_checkable
 class TaskListRepository(Protocol):
     @abstractmethod
     def store(self, task_list: TaskList) -> None:

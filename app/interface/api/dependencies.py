@@ -35,11 +35,13 @@ class InMemoryTaskListRepository(TaskListRepository):
         return self.tasks
 
 
-def _get_task_list_repository() -> TaskListRepository:
-    return InMemoryTaskListRepository()
+def get_task_list_repository() -> TaskListRepository:
+    raise NotImplementedError(
+        "Dependency 'get_task_list_repository' has not been overridden."
+    )
 
 
 def get_task_service(
-    repo: Annotated[TaskListRepository, Depends(_get_task_list_repository)],
+    repo: Annotated[TaskListRepository, Depends(get_task_list_repository)],
 ) -> TaskService:
     return TaskService(task_list_repository=repo)

@@ -2,10 +2,7 @@
 name = "aws-todo-api"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = [
-    "fastapi>=0.116.1",
-    "mangum>=0.19.0",
-]
+dependencies = ["fastapi>=0.116.1", "mangum>=0.19.0"]
 
 [dependency-groups]
 dev = [
@@ -15,4 +12,24 @@ dev = [
     "pytest-xdist>=3.8.0",
     "ruff>=0.12.7",
     "ty>=0.0.1a16",
+]
+
+[tool.ruff]
+line-length = 80
+indent-width = 4
+
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle Errors
+    "W",   # pycodestyle Warning
+    "C90", # mccabe
+    "I",   # isort
+    "N",   # pep8-naming
+    "B",   # flake8-bugbear
+    # "ANN", # flake8-annotations
+    # "S",   # flake8-bandit
+    "PT", # flake8-pytest-style
 ]

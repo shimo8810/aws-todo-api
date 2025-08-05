@@ -9,7 +9,7 @@ from ..domain.task_list import (
 from ..domain.task_list_repository import TaskListRepository
 
 
-class TaskUseCase:
+class TaskService:
     def __init__(self, task_list_repository: TaskListRepository):
         self.task_list_repository = task_list_repository
 

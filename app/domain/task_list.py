@@ -42,11 +42,19 @@ class TaskSortOrder(enum.StrEnum):
     ASCENDING = enum.auto()
     DESCENDING = enum.auto()
 
+    @classmethod
+    def default(cls) -> "TaskSortOrder":
+        return cls.ASCENDING
+
 
 class TaskSortBy(enum.StrEnum):
     CREATED_AT = enum.auto()
     TITLE = enum.auto()
     STATUS = enum.auto()
+
+    @classmethod
+    def default(cls) -> "TaskSortBy":
+        return cls.CREATED_AT
 
 
 @dataclass

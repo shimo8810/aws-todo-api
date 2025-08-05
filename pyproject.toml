@@ -1,0 +1,18 @@
+[project]
+name = "aws-todo-api"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "mangum>=0.19.0",
+]
+
+[dependency-groups]
+dev = [
+    "fastapi[standard]>=0.116.1",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.12.7",
+    "ty>=0.0.1a16",
+]

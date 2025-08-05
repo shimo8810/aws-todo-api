@@ -74,13 +74,13 @@ class Task:
     @classmethod
     def create(
         cls,
-        title: str,
-        description: str,
+        title: TaskTitle,
+        description: TaskDescription,
     ) -> Self:
         return cls(
             id=TaskId.generate(),
-            title=TaskTitle(title),
-            description=TaskDescription(description),
+            title=title,
+            description=description,
             status=TaskStatus.TODO,
             created_at=datetime.now(),
         )

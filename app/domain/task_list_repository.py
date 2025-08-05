@@ -11,3 +11,11 @@ class TaskListRepository(Protocol):
     def find_by_id(self, task_list_id: TaskListId) -> TaskList | None:
         """Find a task list by its ID."""
         raise NotImplementedError
+
+    def delete(self, task_list_id: TaskListId) -> None:
+        """Delete a task list by its ID."""
+        raise NotImplementedError
+
+    def list_all(self) -> list[TaskList]:
+        """List all task lists in the repository."""
+        raise NotImplementedError

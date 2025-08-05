@@ -58,11 +58,11 @@ class TaskList:
     @classmethod
     def create(
         cls,
-        name: str,
+        name: TaskListName,
     ) -> Self:
         return cls(
             id=TaskListId.generate(),
-            name=TaskListName(name),
+            name=name,
             tasks={},
         )
 
@@ -70,18 +70,18 @@ class TaskList:
         """Add a task to the task list."""
         self.tasks[task.id] = task
 
-    def list_tasks(
+    def sort_tasks(
         self,
         sort_by: TaskSortBy,
         sort_order: TaskSortOrder,
-    ) -> list[Task]:
-        """List all tasks in the task list."""
-        tasks = list(self.tasks.values())
-        tasks.sort(
+    ) -> None:
+        """Sort tasks in the task list."""
+        sorted_tasks = sorted(
+            self.tasks.values(),
             key=lambda x: getattr(x, sort_by.value),
             reverse=sort_order == TaskSortOrder.DESCENDING,
         )
-        return tasks
+        self.tasks = {task.id: task for task in sorted_tasks}
 
     def remove_task(self, task_id: TaskId) -> None:
         """Remove a task from the task list by its ID."""
@@ -90,3 +90,7 @@ class TaskList:
     def update_task(self, updated_task: Task) -> None:
         """Update a task in the task list."""
         self.tasks[updated_task.id] = updated_task
+
+    def get_task(self, task_id: TaskId) -> Task | None:
+        """Get a task by its ID."""
+        return self.tasks.get(task_id)

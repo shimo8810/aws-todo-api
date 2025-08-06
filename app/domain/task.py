@@ -84,3 +84,15 @@ class Task:
             status=TaskStatus.TODO,
             created_at=datetime.now(),
         )
+
+    def update_title(self, title: TaskTitle) -> None:
+        """Update the title of the task."""
+        self.title = title
+
+    def update_description(self, description: TaskDescription) -> None:
+        """Update the description of the task."""
+        self.description = description
+
+    def update_status(self, status: TaskStatus) -> None:
+        """Update the status of the task."""
+        self.status = status

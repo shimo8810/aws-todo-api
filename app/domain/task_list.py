@@ -61,7 +61,8 @@ class TaskSortBy(enum.StrEnum):
 class TaskList:
     id: TaskListId
     name: TaskListName
-    tasks: dict[TaskId, Task]
+    tasks: list[TaskId]
+    MAX_TASKS = 1000
 
     @classmethod
     def create(
@@ -71,34 +72,25 @@ class TaskList:
         return cls(
             id=TaskListId.generate(),
             name=name,
-            tasks={},
+            tasks=[],
         )
 
     def add_task(self, task: Task) -> None:
         """Add a task to the task list."""
-        self.tasks[task.id] = task
-
-    def sort_tasks(
-        self,
-        sort_by: TaskSortBy,
-        sort_order: TaskSortOrder,
-    ) -> None:
-        """Sort tasks in the task list."""
-        sorted_tasks = sorted(
-            self.tasks.values(),
-            key=lambda x: getattr(x, sort_by.value),
-            reverse=sort_order == TaskSortOrder.DESCENDING,
-        )
-        self.tasks = {task.id: task for task in sorted_tasks}
+        if len(self.tasks) >= self.MAX_TASKS:
+            raise ValueError(
+                f"Cannot add more than {self.MAX_TASKS} tasks to a task list."
+            )
+        self.tasks.append(task.id)
 
     def remove_task(self, task_id: TaskId) -> None:
         """Remove a task from the task list by its ID."""
-        self.tasks.pop(task_id, None)
+        self.tasks.remove(task_id)
 
-    def update_task(self, updated_task: Task) -> None:
-        """Update a task in the task list."""
-        self.tasks[updated_task.id] = updated_task
+    def includes_task(self, task_id: TaskId) -> bool:
+        """Check if the task list includes a task by its ID."""
+        return task_id in self.tasks
 
-    def get_task(self, task_id: TaskId) -> Task | None:
-        """Get a task by its ID."""
-        return self.tasks.get(task_id)
+    def update_name(self, name: TaskListName) -> None:
+        """Update the name of the task list."""
+        self.name = name

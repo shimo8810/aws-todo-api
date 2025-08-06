@@ -126,7 +126,7 @@ class TodoService:
         task_list_id: TaskListId,
         task_id: TaskId,
         status: TaskStatus,
-    ) -> None:
+    ) -> Task:
         """Update the status of a task in a task list."""
         task_list = self.task_list_repository.find_by_id(task_list_id)
 
@@ -142,6 +142,8 @@ class TodoService:
         task.update_status(status)
 
         self.task_repository.store(task)
+
+        return task
 
     def update_task_title(
         self,

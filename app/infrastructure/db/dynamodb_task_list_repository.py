@@ -40,7 +40,7 @@ class DynamoDBTaskListRepository(TaskListRepository):
                     "PK": f"TASK_LIST#{task_list.id}",
                     "SK": "attr",
                     "id": str(task_list.id),
-                    "title": str(task_list.name),
+                    "name": str(task_list.name),
                 }
             )
             for task_id in task_list.tasks:
@@ -67,7 +67,7 @@ class DynamoDBTaskListRepository(TaskListRepository):
 
         return TaskList(
             id=TaskListId(str(attr["id"])),
-            name=TaskListName(str(attr["title"])),
+            name=TaskListName(str(attr["name"])),
             tasks=[
                 TaskId(str(i["id"]))
                 for i in items
@@ -93,20 +93,28 @@ class DynamoDBTaskListRepository(TaskListRepository):
         items = resp["Items"]
 
         task_lists = {}
+        from pprint import pprint
 
-        for item in items:
-            if item["SK"] == "attr":
-                task_list_id = TaskListId(str(item["id"]))
-                task_lists[task_list_id] = TaskList(
-                    id=task_list_id,
-                    name=TaskListName(str(item["title"])),
-                    tasks=[],
-                )
-            elif str(item["SK"]).startswith("TASK#"):
-                task_list_id = TaskListId(str(item["PK"]).split("#")[1])
-                if task_list_id in task_lists:
-                    task_lists[task_list_id].tasks.append(
-                        TaskId(str(item["id"]))
-                    )
+        for i in items:
+            pk = str(i["PK"]).split("#")[1]
 
-        return list(task_lists.values())
+            if pk not in task_lists:
+                task_lists[pk] = {
+                    "attr": {},
+                    "tasks": [],
+                }
+
+            if i["SK"] == "attr":
+                task_lists[pk]["attr"] = i
+
+            elif str(i["SK"]).startswith("TASK#"):
+                task_lists[pk]["tasks"].append(str(i["id"]))
+
+        return [
+            TaskList(
+                id=TaskListId(k),
+                name=TaskListName(str(v["attr"]["name"])),
+                tasks=[TaskId(t) for t in v["tasks"]],
+            )
+            for k, v in task_lists.items()
+        ]

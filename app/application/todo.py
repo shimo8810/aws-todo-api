@@ -75,7 +75,7 @@ class TodoService:
         task_list.add_task(task)
 
         self.task_list_repository.store(task_list)
-        self.task_repository.store(task)
+        self.task_repository.store(task_list_id, task)
 
         return task
 
@@ -92,7 +92,7 @@ class TodoService:
         if not task_list.includes_task(task_id):
             raise ValueError("Task not found in the task list.")
 
-        task = self.task_repository.find_by_id(task_id)
+        task = self.task_repository.find_by_id(task_list_id, task_id)
 
         if not task:
             raise ValueError("Task not found.")
@@ -105,7 +105,7 @@ class TodoService:
         task_id: TaskId,
     ) -> None:
         """Remove a task from a task list."""
-        task = self.task_repository.find_by_id(task_id)
+        task = self.task_repository.find_by_id(task_list_id, task_id)
 
         if not task:
             raise ValueError("Task not found.")
@@ -119,7 +119,7 @@ class TodoService:
 
         task_list.remove_task(task_id)
         self.task_list_repository.store(task_list)
-        self.task_repository.delete(task_id)
+        self.task_repository.delete(task_list_id, task_id)
 
     def update_task_status(
         self,
@@ -135,13 +135,13 @@ class TodoService:
         if not task_list.includes_task(task_id):
             raise ValueError("Task not found in the task list.")
 
-        task = self.task_repository.find_by_id(task_id)
+        task = self.task_repository.find_by_id(task_list_id, task_id)
 
         if not task:
             raise ValueError("Task not found.")
         task.update_status(status)
 
-        self.task_repository.store(task)
+        self.task_repository.store(task_list_id, task)
 
         return task
 
@@ -159,13 +159,13 @@ class TodoService:
         if not task_list.includes_task(task_id):
             raise ValueError("Task not found in the task list.")
 
-        task = self.task_repository.find_by_id(task_id)
+        task = self.task_repository.find_by_id(task_list_id, task_id)
 
         if not task:
             raise ValueError("Task not found.")
 
         task.update_title(title)
-        self.task_repository.store(task)
+        self.task_repository.store(task_list_id, task)
 
         return task
 
@@ -183,13 +183,13 @@ class TodoService:
         if not task_list.includes_task(task_id):
             raise ValueError("Task not found in the task list.")
 
-        task = self.task_repository.find_by_id(task_id)
+        task = self.task_repository.find_by_id(task_list_id, task_id)
 
         if not task:
             raise ValueError("Task not found.")
 
         task.update_description(description)
-        self.task_repository.store(task)
+        self.task_repository.store(task_list_id, task)
 
         return task
 
@@ -203,10 +203,6 @@ class TodoService:
         if not task_list:
             raise ValueError("Task list not found.")
 
-        tasks = [
-            self.task_repository.find_by_id(task_id)
-            for task_id in task_list.tasks
-        ]
-        tasks = [task for task in tasks if task is not None]
+        tasks = self.task_repository.list_all(task_list_id)
 
         return tasks

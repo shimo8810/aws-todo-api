@@ -21,7 +21,8 @@ def get_task_repository() -> TaskRepository:
 
 def get_todo_service(
     task_list_repository: Annotated[
-        TaskListRepository, Depends(get_task_list_repository)
+        TaskListRepository,
+        Depends(get_task_list_repository),
     ],
     task_repository: Annotated[
         TaskRepository,

@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import BaseModel
 
@@ -44,7 +44,7 @@ class UpdateTaskParameters(BaseModel):
     task_id: str
     title: str | None = None
     description: str | None = None
-    status: str | None = None
+    status: Literal["todo", "done"] | None = None
 
 
 class ListTasksParameters(BaseModel):

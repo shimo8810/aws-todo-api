@@ -41,7 +41,7 @@ async def create_task(
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
-@router.get("/task_list/{task_list_id}/tasks")
+@router.get("/task_list/{task_list_id}/task")
 async def list_tasks(
     params: Annotated[
         schema.ListTasksParameters,

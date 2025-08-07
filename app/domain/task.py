@@ -60,7 +60,6 @@ class TaskDescription:
 class TaskStatus(enum.StrEnum):
     TODO = enum.auto()
     DONE = enum.auto()
-    DELETED = enum.auto()
 
 
 @dataclass

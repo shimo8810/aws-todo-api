@@ -15,8 +15,14 @@ router = APIRouter(tags=["task_list"])
 
 @router.post("/task_list")
 async def create_task_list(
-    params: schema.CreateTaskListParameters,
-    task_usecase: Annotated[TodoService, Depends(get_todo_service)],
+    params: Annotated[
+        schema.CreateTaskListParameters,
+        Depends(schema.CreateTaskListParameters),
+    ],
+    task_usecase: Annotated[
+        TodoService,
+        Depends(get_todo_service),
+    ],
 ) -> schema.TaskListResponse:
     try:
         name = TaskListName(value=params.name)
@@ -28,7 +34,10 @@ async def create_task_list(
 
 @router.get("/task_list")
 async def list_all_task_lists(
-    task_usecase: Annotated[TodoService, Depends(get_todo_service)],
+    task_usecase: Annotated[
+        TodoService,
+        Depends(get_todo_service),
+    ],
 ) -> list[schema.TaskListResponse]:
     try:
         task_lists = task_usecase.list_all_task_lists()
@@ -44,7 +53,8 @@ async def list_all_task_lists(
 @router.get("/task_list/{task_list_id}")
 async def get_task_list(
     params: Annotated[
-        schema.GetTaskListParameters, Depends(schema.GetTaskListParameters)
+        schema.GetTaskListParameters,
+        Depends(schema.GetTaskListParameters),
     ],
     task_usecase: Annotated[
         TodoService,
@@ -65,8 +75,14 @@ async def get_task_list(
 
 @router.patch("/task_list/{task_list_id}")
 async def update_task_list(
-    params: schema.UpdateTaskListParameters,
-    task_usecase: Annotated[TodoService, Depends(get_todo_service)],
+    params: Annotated[
+        schema.UpdateTaskListParameters,
+        Depends(schema.UpdateTaskListParameters),
+    ],
+    task_usecase: Annotated[
+        TodoService,
+        Depends(get_todo_service),
+    ],
 ) -> schema.TaskListResponse:
     try:
         name = TaskListName(value=params.name)
@@ -85,8 +101,14 @@ async def update_task_list(
 
 @router.delete("/task_list/{task_list_id}")
 async def delete_task_list(
-    params: schema.DeleteTaskListParameters,
-    task_usecase: Annotated[TodoService, Depends(get_todo_service)],
+    params: Annotated[
+        schema.DeleteTaskListParameters,
+        Depends(schema.DeleteTaskListParameters),
+    ],
+    task_usecase: Annotated[
+        TodoService,
+        Depends(get_todo_service),
+    ],
 ):
     try:
         task_list_id = TaskListId(params.task_list_id)

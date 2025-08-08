@@ -3,7 +3,6 @@ import uuid
 from dataclasses import dataclass
 from typing import Self
 
-from .task import Task, TaskId
 from .user import UserId
 
 
@@ -58,13 +57,30 @@ class TaskSortBy(enum.StrEnum):
         return cls.CREATED_AT
 
 
+@dataclass(frozen=True)
+class TaskCount:
+    value: int
+    MAX_TASK_COUNT = 100
+
+    def __int__(self) -> int:
+        return self.value
+
+    def validate(self) -> None:
+        if self.value < 0:
+            raise ValueError("Task count cannot be negative.")
+        if self.value > self.MAX_TASK_COUNT:
+            raise ValueError(f"Task count cannot exceed {self.MAX_TASK_COUNT}.")
+
+    def __post_init__(self) -> None:
+        self.validate()
+
+
 @dataclass
 class TaskList:
     id: TaskListId
     user_id: UserId
     name: TaskListName
-    tasks: list[TaskId]
-    MAX_TASKS = 1000
+    count: TaskCount
 
     @classmethod
     def create(
@@ -76,25 +92,17 @@ class TaskList:
             id=TaskListId.generate(),
             user_id=user_id,
             name=name,
-            tasks=[],
+            count=TaskCount(0),
         )
-
-    def add_task(self, task: Task) -> None:
-        """Add a task to the task list."""
-        if len(self.tasks) >= self.MAX_TASKS:
-            raise ValueError(
-                f"Cannot add more than {self.MAX_TASKS} tasks to a task list."
-            )
-        self.tasks.append(task.id)
-
-    def remove_task(self, task_id: TaskId) -> None:
-        """Remove a task from the task list by its ID."""
-        self.tasks.remove(task_id)
-
-    def includes_task(self, task_id: TaskId) -> bool:
-        """Check if the task list includes a task by its ID."""
-        return task_id in self.tasks
 
     def update_name(self, name: TaskListName) -> None:
         """Update the name of the task list."""
         self.name = name
+
+    def add_task(self) -> None:
+        """Add a task to the task list."""
+        self.count = TaskCount(self.count.value + 1)
+
+    def delete_task(self) -> None:
+        """Delete a task from the task list."""
+        self.count = TaskCount(self.count.value - 1)

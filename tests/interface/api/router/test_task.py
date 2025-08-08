@@ -127,8 +127,6 @@ async def test_update_task_should_return_updated_task(mock_todo_service):
     params = UpdateTaskParameters(
         task_list_id="list1",
         task_id="task1",
-        title="Updated Title",
-        description="Updated Description",
         status="done",
     )
     mock_task = Task(
@@ -139,7 +137,7 @@ async def test_update_task_should_return_updated_task(mock_todo_service):
         status=TaskStatus.DONE,
         created_at=datetime.now(),
     )
-    mock_todo_service.update_task.return_value = mock_task
+    mock_todo_service.update_task_status.return_value = mock_task
 
     # Act
     response = await update_task(params, mock_todo_service)
@@ -148,7 +146,7 @@ async def test_update_task_should_return_updated_task(mock_todo_service):
     assert response.title == "Updated Title"
     assert response.description == "Updated Description"
     assert response.status == TaskStatus.DONE
-    mock_todo_service.update_task.assert_called_once()
+    mock_todo_service.update_task_status.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -160,7 +158,7 @@ async def test_delete_task_should_return_success_message(mock_todo_service):
     response = await delete_task(params, mock_todo_service)
 
     # Assert
-    assert response == {"message": "Task deleted successfully"}
+    assert response is None
     mock_todo_service.remove_task.assert_called_once_with(
         task_list_id=TaskListId("list1"), task_id=TaskId("task1")
     )

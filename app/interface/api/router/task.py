@@ -137,6 +137,7 @@ async def update_task(
                 status=status,
             )
 
+        logger.debug(f"Task updated successfully: {task=}")
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:

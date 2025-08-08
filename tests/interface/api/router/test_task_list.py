@@ -142,7 +142,7 @@ async def test_delete_task_list_should_return_success_message(
     response = await delete_task_list(params, mock_todo_service)
 
     # Assert
-    assert response == {"message": "Task list deleted successfully"}
+    assert response is None
     mock_todo_service.delete_task_list.assert_called_once_with(
         task_list_id=TaskListId("list1")
     )

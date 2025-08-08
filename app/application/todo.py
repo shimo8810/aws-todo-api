@@ -77,7 +77,7 @@ class TodoService:
             raise ValueError("Task list not found.")
 
         task = Task.create(title, description, task_list_id)
-        task_list.add_task(task)
+        task_list.add_task()
 
         self.task_list_repository.store(task_list)
         self.task_repository.store(task)
@@ -86,17 +86,9 @@ class TodoService:
 
     def get_task(
         self,
-        task_list_id: TaskListId,
         task_id: TaskId,
     ) -> Task:
         """Get a task from a task list by its ID."""
-        task_list = self.task_list_repository.find_by_id(task_list_id)
-
-        if not task_list:
-            raise ValueError("Task list not found.")
-        if not task_list.includes_task(task_id):
-            raise ValueError("Task not found in the task list.")
-
         task = self.task_repository.find_by_id(task_id)
 
         if not task:
@@ -119,27 +111,18 @@ class TodoService:
 
         if not task_list:
             raise ValueError("Task list not found.")
-        if not task_list.includes_task(task_id):
-            raise ValueError("Task not found in the task list.")
 
-        task_list.remove_task(task_id)
+        task_list.delete_task()
+
         self.task_list_repository.store(task_list)
         self.task_repository.delete(task_id)
 
     def update_task_status(
         self,
-        task_list_id: TaskListId,
         task_id: TaskId,
         status: TaskStatus,
     ) -> Task:
         """Update the status of a task in a task list."""
-        task_list = self.task_list_repository.find_by_id(task_list_id)
-
-        if not task_list:
-            raise ValueError("Task list not found.")
-        if not task_list.includes_task(task_id):
-            raise ValueError("Task not found in the task list.")
-
         task = self.task_repository.find_by_id(task_id)
 
         if not task:
@@ -152,17 +135,10 @@ class TodoService:
 
     def update_task_title(
         self,
-        task_list_id: TaskListId,
         task_id: TaskId,
         title: TaskTitle,
     ) -> Task:
         """Update the title of a task in a task list."""
-        task_list = self.task_list_repository.find_by_id(task_list_id)
-
-        if not task_list:
-            raise ValueError("Task list not found.")
-        if not task_list.includes_task(task_id):
-            raise ValueError("Task not found in the task list.")
 
         task = self.task_repository.find_by_id(task_id)
 
@@ -176,18 +152,10 @@ class TodoService:
 
     def update_task_description(
         self,
-        task_list_id: TaskListId,
         task_id: TaskId,
         description: TaskDescription,
     ) -> Task:
         """Update the description of a task in a task list."""
-        task_list = self.task_list_repository.find_by_id(task_list_id)
-
-        if not task_list:
-            raise ValueError("Task list not found.")
-        if not task_list.includes_task(task_id):
-            raise ValueError("Task not found in the task list.")
-
         task = self.task_repository.find_by_id(task_id)
 
         if not task:

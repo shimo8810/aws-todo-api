@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
+from loguru import logger
 
 from ....application.todo import TodoService
 from ....domain.task import TaskDescription, TaskId, TaskStatus, TaskTitle
@@ -38,6 +39,7 @@ async def create_task(
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:
+        logger.error(f"Error creating task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -60,6 +62,7 @@ async def list_tasks(
         return [schema.TaskResponse.from_domain(task) for task in tasks]
 
     except Exception as e:
+        logger.error(f"Error listing tasks: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -75,17 +78,16 @@ async def get_task(
     ],
 ) -> schema.TaskResponse:
     try:
-        task_list_id = TaskListId(value=params.task_list_id)
         task_id = TaskId(value=params.task_id)
 
         task = task_usecase.get_task(
-            task_list_id=task_list_id,
             task_id=task_id,
         )
 
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:
+        logger.error(f"Error getting task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -101,7 +103,6 @@ async def update_task(
     ],
 ) -> schema.TaskResponse:
     try:
-        task_list_id = TaskListId(value=params.task_list_id)
         task_id = TaskId(value=params.task_id)
 
         if (
@@ -118,7 +119,6 @@ async def update_task(
         if params.title is not None:
             title = TaskTitle(value=params.title)
             task = task_usecase.update_task_title(
-                task_list_id=task_list_id,
                 task_id=task_id,
                 title=title,
             )
@@ -126,7 +126,6 @@ async def update_task(
         if params.description is not None:
             description = TaskDescription(value=params.description)
             task = task_usecase.update_task_description(
-                task_list_id=task_list_id,
                 task_id=task_id,
                 description=description,
             )
@@ -134,7 +133,6 @@ async def update_task(
         if params.status is not None:
             status = TaskStatus(params.status)
             task = task_usecase.update_task_status(
-                task_list_id=task_list_id,
                 task_id=task_id,
                 status=status,
             )
@@ -142,6 +140,7 @@ async def update_task(
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:
+        logger.error(f"Error updating task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -166,4 +165,5 @@ async def delete_task(
         )
 
     except Exception as e:
+        logger.error(f"Error deleting task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e

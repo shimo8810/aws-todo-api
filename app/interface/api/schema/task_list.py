@@ -7,15 +7,17 @@ from ....domain.task_list import TaskList
 
 class TaskListResponse(BaseModel):
     id: str
+    user_id: str
     name: str
-    tasks: list[str]
+    count: int
 
     @classmethod
     def from_domain(cls, task_list: TaskList) -> Self:
         return cls(
             id=str(task_list.id),
+            user_id=str(task_list.user_id),
             name=str(task_list.name),
-            tasks=[str(task_id) for task_id in task_list.tasks],
+            count=int(task_list.count),
         )
 
 

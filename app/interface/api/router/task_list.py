@@ -32,7 +32,7 @@ async def create_task_list(
         task_list = task_usecase.create_task_list(user_id, name)
         return schema.TaskListResponse.from_domain(task_list)
     except Exception as e:
-        logger.error(f"Error creating task list: {e}")
+        logger.exception(f"Error creating task list: {e}")
         raise HTTPException(status_code=400, detail=str(e)) from e
 
 
@@ -51,7 +51,7 @@ async def list_all_task_lists(
         ]
 
     except Exception as e:
-        logger.error(f"Error listing task lists: {e}")
+        logger.exception(f"Error listing task lists: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -75,7 +75,7 @@ async def get_task_list(
         return schema.TaskListResponse.from_domain(task_list)
 
     except Exception as e:
-        logger.error(f"Error getting task list: {e}")
+        logger.exception(f"Error getting task list: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -102,7 +102,7 @@ async def update_task_list(
         return schema.TaskListResponse.from_domain(task_list)
 
     except Exception as e:
-        logger.error(f"Error updating task list: {e}")
+        logger.exception(f"Error updating task list: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -122,5 +122,5 @@ async def delete_task_list(
         task_usecase.delete_task_list(task_list_id=task_list_id)
 
     except Exception as e:
-        logger.error(f"Error deleting task list: {e}")
+        logger.exception(f"Error deleting task list: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e

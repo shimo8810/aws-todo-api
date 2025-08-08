@@ -9,7 +9,6 @@ class TaskRepository(Protocol):
     @abstractmethod
     def store(
         self,
-        task_list_id: TaskListId,
         task: Task,
     ) -> None:
         """Save a task to the repository."""
@@ -18,7 +17,6 @@ class TaskRepository(Protocol):
     @abstractmethod
     def find_by_id(
         self,
-        task_list_id: TaskListId,
         task_id: TaskId,
     ) -> Task | None:
         """Find a task by its ID."""
@@ -27,7 +25,6 @@ class TaskRepository(Protocol):
     @abstractmethod
     def delete(
         self,
-        task_list_id: TaskListId,
         task_id: TaskId,
     ) -> None:
         """Delete a task by its ID."""

@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Self
 
+from .task_list import TaskListId
+
 
 @dataclass(frozen=True)
 class TaskId:
@@ -50,7 +52,7 @@ class TaskDescription:
     def validate(self) -> None:
         if len(self.value) > self.MAX_LENGTH:
             raise ValueError(
-                f"Description exceeds maximum length of {self.MAX_LENGTH} characters."
+                f"Description exceeds maximum length of {self.MAX_LENGTH} characters."  # noqa
             )
 
     def __post_init__(self) -> None:
@@ -65,6 +67,7 @@ class TaskStatus(enum.StrEnum):
 @dataclass
 class Task:
     id: TaskId
+    task_list_id: TaskListId
     title: TaskTitle
     description: TaskDescription
     status: TaskStatus
@@ -75,9 +78,11 @@ class Task:
         cls,
         title: TaskTitle,
         description: TaskDescription,
+        task_list_id: TaskListId,
     ) -> Self:
         return cls(
             id=TaskId.generate(),
+            task_list_id=task_list_id,
             title=title,
             description=description,
             status=TaskStatus.TODO,

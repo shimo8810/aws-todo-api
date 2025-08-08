@@ -39,7 +39,7 @@ async def create_task(
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:
-        logger.error(f"Error creating task: {e}")
+        logger.exception(f"Error creating task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -62,7 +62,7 @@ async def list_tasks(
         return [schema.TaskResponse.from_domain(task) for task in tasks]
 
     except Exception as e:
-        logger.error(f"Error listing tasks: {e}")
+        logger.exception(f"Error listing tasks: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -87,7 +87,7 @@ async def get_task(
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:
-        logger.error(f"Error getting task: {e}")
+        logger.exception(f"Error getting task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -140,7 +140,7 @@ async def update_task(
         return schema.TaskResponse.from_domain(task)
 
     except Exception as e:
-        logger.error(f"Error updating task: {e}")
+        logger.exception(f"Error updating task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
@@ -165,5 +165,5 @@ async def delete_task(
         )
 
     except Exception as e:
-        logger.error(f"Error deleting task: {e}")
+        logger.exception(f"Error deleting task: {e}")
         raise HTTPException(status_code=404, detail=str(e)) from e

@@ -128,13 +128,14 @@ async def test_update_task_should_return_updated_task(mock_todo_service):
         task_list_id="list1",
         task_id="task1",
         title="Updated Title",
+        description="Updated Description",
         status="done",
     )
     mock_task = Task(
         id=TaskId("task1"),
         task_list_id=TaskListId("list1"),
         title=TaskTitle("Updated Title"),
-        description=TaskDescription(""),
+        description=TaskDescription("Updated Description"),
         status=TaskStatus.DONE,
         created_at=datetime.now(),
     )
@@ -145,6 +146,7 @@ async def test_update_task_should_return_updated_task(mock_todo_service):
 
     # Assert
     assert response.title == "Updated Title"
+    assert response.description == "Updated Description"
     assert response.status == TaskStatus.DONE
     mock_todo_service.update_task.assert_called_once()
 
@@ -160,5 +162,5 @@ async def test_delete_task_should_return_success_message(mock_todo_service):
     # Assert
     assert response == {"message": "Task deleted successfully"}
     mock_todo_service.remove_task.assert_called_once_with(
-        task_id=TaskId("task1")
+        task_list_id=TaskListId("list1"), task_id=TaskId("task1")
     )

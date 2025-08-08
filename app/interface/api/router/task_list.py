@@ -7,6 +7,7 @@ from ....domain.task_list import (
     TaskListId,
     TaskListName,
 )
+from ....domain.user import UserId
 from ..dependencies import get_todo_service
 from ..schema import task_list as schema
 
@@ -26,7 +27,8 @@ async def create_task_list(
 ) -> schema.TaskListResponse:
     try:
         name = TaskListName(value=params.name)
-        task_list = task_usecase.create_task_list(name=name)
+        user_id = UserId("000001")
+        task_list = task_usecase.create_task_list(user_id, name)
         return schema.TaskListResponse.from_domain(task_list)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -40,7 +42,7 @@ async def list_all_task_lists(
     ],
 ) -> list[schema.TaskListResponse]:
     try:
-        task_lists = task_usecase.list_all_task_lists()
+        task_lists = task_usecase.list_all_task_lists(user_id=UserId("000001"))
         return [
             schema.TaskListResponse.from_domain(task_list)
             for task_list in task_lists

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Self
 
 from .task import Task, TaskId
+from .user import UserId
 
 
 @dataclass(frozen=True)
@@ -60,6 +61,7 @@ class TaskSortBy(enum.StrEnum):
 @dataclass
 class TaskList:
     id: TaskListId
+    user_id: UserId
     name: TaskListName
     tasks: list[TaskId]
     MAX_TASKS = 1000
@@ -68,9 +70,11 @@ class TaskList:
     def create(
         cls,
         name: TaskListName,
+        user_id: UserId,
     ) -> Self:
         return cls(
             id=TaskListId.generate(),
+            user_id=user_id,
             name=name,
             tasks=[],
         )

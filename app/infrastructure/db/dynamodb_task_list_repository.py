@@ -1,6 +1,7 @@
 import os
 
 import boto3
+from boto3.dynamodb.conditions import Key
 from loguru import logger
 
 from ...domain.task_list import TaskCount, TaskList, TaskListId, TaskListName
@@ -59,10 +60,9 @@ class DynamoDBTaskListRepository(TaskListRepository):
     def find_by_id(self, task_list_id: TaskListId) -> TaskList | None:
         """Find a task list by its ID."""
         resp = self._table.query(
-            Key={
-                "GSI1PK": f"TASK_LIST#{task_list_id}",
-                "GSI1SK": f"TASK_LIST#{task_list_id}",
-            }
+            IndexName="GSI1",
+            KeyConditionExpression=Key("GSI1PK").eq(f"TASK_LIST#{task_list_id}")
+            & Key("GSI1SK").eq(f"TASK_LIST#{task_list_id}"),
         )
         items = resp["Items"]
 
@@ -70,7 +70,7 @@ class DynamoDBTaskListRepository(TaskListRepository):
             return None
 
         return TaskList(
-            id=TaskListId(str(items[0]["id"])),
+            id=TaskListId(str(items[0]["task_list_id"])),
             user_id=UserId(str(items[0]["user_id"])),
             name=TaskListName(str(items[0]["name"])),
             count=TaskCount(int(items[0]["count"])),
@@ -78,21 +78,29 @@ class DynamoDBTaskListRepository(TaskListRepository):
 
     def delete(self, task_list_id: TaskListId) -> None:
         """Delete a task list by its ID."""
+        resp = self._table.query(
+            IndexName="GSI1",
+            KeyConditionExpression=Key("GSI1PK").eq(
+                f"TASK_LIST#{task_list_id}"
+            ),
+        )
+        items = resp.get("Items", [])
+
+        if not items:
+            return
+
         self._table.delete_item(
             Key={
-                "GSI1PK": f"TASK_LIST#{task_list_id}",
-                "GSI1SK": f"TASK_LIST#{task_list_id}",
+                "PK": items[0]["PK"],
+                "SK": items[0]["SK"],
             }
         )
 
     def list_all(self, user_id: UserId) -> list[TaskList]:
         """List all task lists in the repository."""
         resp = self._table.query(
-            KeyConditionExpression="PK = :pk AND begins_with(SK, :sk)",
-            ExpressionAttributeValues={
-                ":pk": f"USER#{user_id}",
-                ":sk": "TASK_LIST#",
-            },
+            KeyConditionExpression=Key("PK").eq(f"USER#{user_id}")
+            & Key("SK").begins_with("TASK_LIST#"),
         )
         items = resp["Items"]
 

@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 
 from ....application.todo import TodoService
-from ....domain.task import Task, TaskDescription, TaskId, TaskStatus, TaskTitle
+from ....domain.task import TaskDescription, TaskId, TaskStatus, TaskTitle
 from ....domain.task_list import (
     TaskListId,
 )
@@ -109,9 +109,10 @@ async def update_task(
             and params.description is None
             and params.status is None
         ):
+            detail = "At least one field (title, description, status) must be provided for update."  # noqa
             raise HTTPException(
                 status_code=400,
-                detail="At least one field (title, description, status) must be provided for update.",
+                detail=detail,
             )
 
         if params.title is not None:

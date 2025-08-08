@@ -2,6 +2,7 @@ from abc import abstractmethod
 from typing import Protocol
 
 from .task_list import TaskList, TaskListId
+from .user import UserId
 
 
 class TaskListRepository(Protocol):
@@ -21,6 +22,6 @@ class TaskListRepository(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    def list_all(self) -> list[TaskList]:
+    def list_all(self, user_id: UserId) -> list[TaskList]:
         """List all task lists in the repository."""
         raise NotImplementedError
